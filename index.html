@@ -6,10 +6,10 @@
     <title>全國技藝競賽 機器人學模擬測驗</title>
     <style>
         :root {
-            --bg-color: #f4f7f6;
+            --bg-color: #f0f0f0;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --primary-color: #003366;
+            --text-color: #1a1a1a;
+            --primary-color: #222222;
             --border-color: #cccccc;
             --unanswered-bg: #f8f9fa;
             --answered-bg: #d1ecf1;
@@ -20,56 +20,56 @@
             --correct-text: #155724;
             --wrong-bg: #f8d7da;
             --wrong-text: #721c24;
-            --accent-color: #f39c12;
+            --accent-color: #444444;
             --glass-bg: rgba(255,255,255,0.7);
             --glass-border: rgba(255,255,255,0.9);
-            --option-hover: #e8f0fe;
+            --option-hover: #e8e8e8;
         }
 
         [data-theme="dark"] {
-            --bg-color: #0a1628;
-            --card-bg: rgba(255,255,255,0.06);
+            --bg-color: #0a0a0a;
+            --card-bg: rgba(255,255,255,0.05);
             --text-color: #e0e0e0;
-            --primary-color: #f39c12;
-            --border-color: rgba(255,255,255,0.15);
-            --unanswered-bg: rgba(255,255,255,0.05);
-            --answered-bg: rgba(77,163,255,0.25);
-            --answered-text: #a8d8ff;
-            --skipped-bg: rgba(243,156,18,0.15);
-            --skipped-text: #f8c96b;
+            --primary-color: #e2e8f0;
+            --border-color: rgba(255,255,255,0.12);
+            --unanswered-bg: rgba(255,255,255,0.04);
+            --answered-bg: rgba(200,200,200,0.18);
+            --answered-text: #c8d6e5;
+            --skipped-bg: rgba(200,200,200,0.10);
+            --skipped-text: #a0a0a0;
             --correct-bg: rgba(40,167,69,0.2);
             --correct-text: #7ee8a2;
             --wrong-bg: rgba(220,53,69,0.2);
             --wrong-text: #f5a0a8;
-            --accent-color: #f39c12;
+            --accent-color: #e2e8f0;
             --glass-bg: rgba(255,255,255,0.05);
-            --glass-border: rgba(255,255,255,0.12);
-            --option-hover: rgba(243,156,18,0.12);
+            --glass-border: rgba(255,255,255,0.10);
+            --option-hover: rgba(255,255,255,0.08);
         }
 
         body {
             font-family: system-ui, -apple-system, sans-serif;
             margin: 0; padding: 15px;
             display: flex; flex-direction: column; height: 100vh; box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;}
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-        /* 淺色模式背景 */
         body:not([data-theme="dark"]) {
             background-color: var(--bg-color);
             color: var(--text-color);
         }
 
-        /* 深色模式：整頁漸層同首頁 */
         [data-theme="dark"] body,
         html[data-theme="dark"] body {
-            background: linear-gradient(135deg, #0a1628 0%, #0a2a4a 60%, #0a1628 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 60%, #0a0a0a 100%);
             background-attachment: fixed;
-            color: var(--text-color);}
+            color: var(--text-color);
+        }
 
         /* ================= 首頁 ================= */
         #setup-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0a1628 0%, #003366 60%, #0a2a4a 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1c1c1c 60%, #0a0a0a 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 1000; gap: 0;
         }
@@ -78,64 +78,63 @@
 
         .setup-eyebrow {
             font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em;
-            text-transform: uppercase; color: rgba(255,255,255,0.45); margin: 0 0 16px 0;
+            text-transform: uppercase; color: rgba(255,255,255,0.4); margin: 0 0 16px 0;
         }
 
         .setup-title {
             font-size: 2.6rem; font-weight: 800; color: #ffffff;
             margin: 0 0 10px 0; letter-spacing: -0.02em; line-height: 1.15;
-        }
-        .setup-title span { color: #f39c12; }
+        }.setup-title span { color: #e2e8f0; }
 
-        .setup-tagline { font-size: 0.95rem; color: rgba(255,255,255,0.5); margin: 0; font-weight: 400; }
+        .setup-tagline { font-size: 0.95rem; color: rgba(255,255,255,0.4); margin: 0; font-weight: 400; }
 
         .setup-version-badge {
             display: inline-block;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            color: rgba(255,255,255,0.5); font-size: 0.75rem; font-weight: 600;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.4); font-size: 0.75rem; font-weight: 600;
             padding: 3px 10px; border-radius: 20px; margin-top: 14px; letter-spacing: 0.05em;
         }
 
         .setup-card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border-radius: 16px; padding: 32px 36px; width: 90%; max-width: 520px;
             display: flex; flex-direction: column; gap: 20px;}
 
         .setup-field-label {
             display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em;
-            text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px;
+            text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px;
         }
 
         .setup-row { display: flex; gap: 10px; align-items: center; }
 
         .select-input, .custom-input {
             flex: 1; padding: 11px 14px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem;
-            background: rgba(255,255,255,0.08); color: #ffffff; outline: none;
+            border: 1px solid rgba(255,255,255,0.12); font-size: 0.95rem;
+            background: rgba(255,255,255,0.07); color: #ffffff; outline: none;
             transition: border-color 0.15s; min-width: 0;
         }
-        .select-input:focus, .custom-input:focus { border-color: rgba(243,156,18,0.7); }
-        .select-input option { background: #1a2a40; color: #ffffff; }
-        .custom-input::placeholder { color: rgba(255,255,255,0.3); }
+        .select-input:focus, .custom-input:focus { border-color: rgba(226,232,240,0.6); }
+        .select-input option { background: #1a1a1a; color: #ffffff; }
+        .custom-input::placeholder { color: rgba(255,255,255,0.25); }
 
-        .setup-divider { color: rgba(255,255,255,0.3); font-size: 0.85rem; white-space: nowrap; }
+        .setup-divider { color: rgba(255,255,255,0.25); font-size: 0.85rem; white-space: nowrap; }
 
-        /* 題庫範圍 row */
         .range-row { display: flex; align-items: center; gap: 8px; }
         .range-row .custom-input { width: 80px; flex: 0 0 80px; text-align: center; }
-        .range-label { color: rgba(255,255,255,0.5); font-size: 0.9rem; white-space: nowrap; }
+        .range-label { color: rgba(255,255,255,0.4); font-size: 0.9rem; white-space: nowrap; }
 
         .btn-start-full {
             width: 100%; padding: 14px 0; border: none; border-radius: 10px;
             font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer;
-            background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%); color: #ffffff;
+            background: linear-gradient(90deg, #3a3a3a 0%, #555555 100%);
+            color: #ffffff; border: 1px solid rgba(255,255,255,0.15);
             transition: opacity 0.15s, transform 0.1s;
         }
-        .btn-start-full:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-start-full:hover { opacity: 0.85; transform: translateY(-1px); }
         .btn-start-full:active { transform: translateY(0); }
 
-        .setup-hint { font-size: 0.78rem; color: rgba(255,255,255,0.25); text-align: center; margin-top: 20px; }
+        .setup-hint { font-size: 0.78rem; color: rgba(255,255,255,0.2); text-align: center; margin-top: 20px; }
 
         /* ================= 主畫面 ================= */
         header {
@@ -146,7 +145,7 @@
         .header-controls { display: flex; align-items: center; gap: 10px; }
 
         .timer-box {
-            background-color: #333; color: #ffc107; padding: 6px 12px; border-radius: 6px;
+            background-color: #222; color: #e2e8f0; padding: 6px 12px; border-radius: 6px;
             font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.1rem;
             min-width: 70px; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
@@ -161,7 +160,6 @@
             margin-top: 15px; overflow: hidden; width: 100%;
         }
 
-        /* 答題概況面板加大 */
         .left-panel {
             flex: 0 0 300px;
             background: var(--glass-bg);
@@ -172,9 +170,7 @@
             display: flex; flex-direction: column; overflow: hidden;
         }
 
-        [data-theme="dark"] .left-panel {
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-        }
+        [data-theme="dark"] .left-panel { box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
 
         .grid-title {
             font-size: 1rem; font-weight: bold; text-align: center;
@@ -200,18 +196,15 @@
 
         .bookmark-star {
             position: absolute; top: 2px; right: 3px;
-            color: #ffc107; font-size: 0.7rem; display: none;
+            color: #a0a0a0; font-size: 0.7rem; display: none;
             line-height: 1; pointer-events: none;
         }
         .grid-item.bookmarked .bookmark-star { display: block; }
 
-        /* ================= 右側答題區 ================= */
         .right-panel {
-            flex: 1;
-            display: flex; flex-direction: column; overflow-y: auto; gap: 14px;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto; gap: 14px;
         }
 
-        /* 統計列 */
         .stats-container {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--glass-bg);
@@ -224,7 +217,6 @@
         .btn-reset { background-color: #6c757d; font-size: 0.85rem; padding: 6px 12px; }
         .btn-reset:hover { background-color: #dc3545; }
 
-        /* 毛玻璃題目卡片 */
         .question-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -234,9 +226,7 @@
             display: flex; flex-direction: column; flex: 1; gap: 18px;
         }
 
-        [data-theme="dark"] .question-card {
-            box-shadow: 0 4px 32px rgba(0,0,0,0.4);
-        }
+        [data-theme="dark"] .question-card { box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
 
         .question-number {
             font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em;
@@ -248,7 +238,6 @@
             color: var(--text-color); margin: 0;
         }
 
-        /* 選項 */
         .options-container { display: flex; flex-direction: column; gap: 10px; }
 
         .options-container label {
@@ -262,7 +251,6 @@
         .options-container label:hover { background: var(--option-hover); transform: translateX(3px); }
         .options-container input { margin-right: 12px; transform: scale(1.2); cursor: pointer; flex-shrink: 0; }
 
-        /* 作答結果 */
         .result-box {
             padding: 14px 18px; border-radius: 10px; font-weight: bold;
             font-size: 1.05rem; display: none;
@@ -270,7 +258,6 @@
         .correct-box { background-color: var(--correct-bg); color: var(--correct-text); border-left: 5px solid #28a745; }
         .wrong-box { background-color: var(--wrong-bg); color: var(--wrong-text); border-left: 5px solid #dc3545; }
 
-        /* 翻頁按鈕 */
         .action-bar { display: flex; gap: 10px; }
         .action-bar .btn { flex: 1; padding: 13px 0; font-size: 1rem; border-radius: 10px; }
 
@@ -305,7 +292,6 @@
     </div>
 
     <div class="setup-card">
-        <!-- 抽取題數 -->
         <div>
             <span class="setup-field-label">抽取題數</span>
             <div class="setup-row">
@@ -321,7 +307,6 @@
             </div>
         </div>
 
-        <!-- 題庫範圍 -->
         <div>
             <span class="setup-field-label">題庫範圍（留空 = 全部）</span>
             <div class="range-row">
@@ -343,8 +328,8 @@
     <h1>機器人學即測即評</h1>
     <div class="header-controls">
         <div class="timer-box" id="timer-display">00:00</div>
-        <button class="btn" style="background-color:#6c757d;" onclick="toggleTheme()">切換主題</button>
-        <button class="btn" style="background-color:#e28743;" onclick="toggleBookmarkCurrent()">書籤</button>
+        <button class="btn" style="background-color:#555;" onclick="toggleTheme()">切換主題</button>
+        <button class="btn" style="background-color:#666;" onclick="toggleBookmarkCurrent()">書籤</button>
         <button class="btn" style="background-color:#dc3545;" onclick="reportError()">錯誤回報</button>
         <button class="btn" style="background-color:#28a745;" onclick="submitQuiz()">交卷計分</button>
     </div>
@@ -369,7 +354,7 @@
             <div class="result-box" id="feedback-box"></div>
             <div class="action-bar">
                 <button class="btn" style="background-color:#555;" onclick="changeQuestion(currentIndex - 1)">上一題</button>
-                <button class="btn" onclick="changeQuestion(currentIndex + 1)">下一題</button>
+                <button class="btn" style="background-color:#444;" onclick="changeQuestion(currentIndex + 1)">下一題</button>
             </div>
         </div>
     </div>
@@ -423,7 +408,6 @@
     }
 
     function startQuiz() {
-        // 題庫範圍篩選
         let rs = document.getElementById('range-start').value;
         let re = document.getElementById('range-end').value;
         let pool = questionBank;
@@ -434,8 +418,7 @@
             pool = questionBank.filter(q => {
                 let id = parseInt(q.q.match(/^\d+/)[0]);
                 return id >= start && id <= end;
-            });
-            if (pool.length === 0) { alert(`範圍第 ${start}–${end} 題沒有找到題目，請確認範圍！`); return; }
+            });if (pool.length === 0) { alert(`範圍第 ${start}–${end} 題沒有找到題目，請確認範圍！`); return; }
         }
 
         let customVal = document.getElementById('custom-num').value;
@@ -471,8 +454,7 @@
             html.removeAttribute('data-theme'); localStorage.setItem('hcvs_theme', 'light');
         } else {
             html.setAttribute('data-theme', 'dark'); localStorage.setItem('hcvs_theme', 'dark');
-        }
-    }
+        }}
 
     function renderGrid() {
         const grid = document.getElementById('number-grid');
