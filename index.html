@@ -112,6 +112,18 @@
             border-color: rgba(255,255,255,0.15);
             color: rgba(255,255,255,0.4);
         }
+        [data-theme="dark"] .select-input,
+        [data-theme="dark"] .custom-input {
+        background-color: rgba(255,255,255,0.08);
+        color: #e0e0e0;
+        border-color: rgba(255,255,255,0.2);
+        }
+
+        /* select 下拉選單本體 */
+        [data-theme="dark"] .select-input option {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        }
 
         .setup-card {
             background: var(--card); padding: 30px; border-radius: 16px;
@@ -121,7 +133,7 @@
         }
 
         .setup-row { display: flex; align-items: center; width: 100%; gap: 10px; }
-        .setup-field-label { font-weight: bold; width: 85px; flex-shrink: 0; text-align: right; color: var(--text); font-size: 1.05rem;}
+        .setup-field-label { font-weight: bold; width: 85px; flex-shrink: 0; text-align: right; color: var(--text); font-size: 1.05rem; }
         .setup-row-text { white-space: nowrap; font-weight: 600; color: var(--sub); }
         .custom-input, .select-input {
             flex: 1; min-width: 0; padding: 12px; border-radius: 8px; border: 1px solid var(--border);
