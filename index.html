@@ -157,9 +157,11 @@
             #setup-screen .row { flex-wrap: wrap; }
             header { flex-direction: column; align-items: stretch; border-bottom: none; gap: 10px; }
             header h1 { text-align: center; font-size: 1.4rem; }
-            .header-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-            .timer-box { grid-column: span 2; width: 100%; padding: 10px; font-size: 1.1rem; }
+            .header-controls { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; width: 100%; }
+            .timer-box { grid-column: span 4; width: 100%; padding: 10px; font-size: 1.1rem; }
             .header-controls .btn { padding: 10px 6px; font-size: 0.82rem; width: 100%; text-align: center; }
+            .header-controls .btn:nth-child(6),
+            .header-controls .btn:nth-child(7) { grid-column: span 2; }
             .main { flex-direction: column; gap: 10px; }
             .left-panel { flex: none; width: 100%; height: 140px; padding: 12px; }
             .right-panel { padding: 0; gap: 10px; }
@@ -256,7 +258,7 @@
 
 <script>
     // ===== 題庫放這裡 =====
-    const questionBank = [
+    const questionBank = 
     { q: "1. 多軸關節式機器人(機器手臂)的特點是高自由度與靈活性...試問下列何者適合以並聯式機器人來開發？", options: ["(A) 汽車板金噴漆", "(B) 食品自動化整列", "(C) 手機外殼去毛邊及拋光", "(D) 汽車底盤焊接"], ans: 1 },
     { q: "2. 下列何種感測器可以測距離？", options: ["(A) 超音波感測器", "(B) 紅外線感測器", "(C) 雷射光感測器", "(D) 以上皆是"], ans: 3 },
     { q: "3. 下列何種通訊方式不屬於無線傳輸？", options: ["(A) Wi-Fi", "(B) Bluetooth 藍芽", "(C) ZigBee", "(D) RS232"], ans: 3 },
