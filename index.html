@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全國技藝競賽 機器人學即測即評</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #003366;
+            --border-color: #cccccc;
+            --unanswered-bg: #f8f9fa;
+            --answered-bg: #d1ecf1;
+            --answered-text: #0c5460;
+            --skipped-bg: #fff3cd;
+            --skipped-text: #856404;
+            --correct-bg: #d4edda;
+            --correct-text: #155724;
+            --wrong-bg: #f8d7da;
+            --wrong-text: #721c24;
+            --accent-color: #f39c12;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --primary-color: #4da3ff;
+            --border-color: #444444;
+            --unanswered-bg: #3a3a3a;
+            --answered-bg: #114e60;
+            --answered-text: #e0f7fa;
+            --correct-bg: #1e4620;
+            --correct-text: #a3e2a6;
+            --wrong-bg: #5c1d24;
+            --wrong-text: #f2a3a8;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* ================= 首頁設定面板 ================= */
+        #setup-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        
+        .setup-header-text { text-align: center; margin-bottom: 25px; }
+        .setup-title { color: var(--primary-color); font-size: 2.2rem; font-weight: bold; margin: 0 0 10px 0; }
+        .setup-subtitle { color: var(--accent-color); font-size: 1.2rem; font-weight: bold; margin: 0; }
+        .setup-version { color: #888; font-size: 0.9rem; font-weight: normal; margin-left: 8px; }
+        
+        .setup-bar {
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            display: flex; flex-direction: column; gap: 20px;
+            width: 90%; max-width: 650px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        /* 恢復上下兩排，並強制拉伸填滿 */
+        .setup-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .row-label {
+            font-weight: bold; 
+            color: var(--text-color); 
+            font-size: 1.1rem;
+            width: 90px; /* 固定標籤寬度讓兩排起點對齊 */
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .row-text {
+            white-space: nowrap;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .row-input { 
+            flex: 1; /* 核心：讓輸入框與選單自動拉伸填滿剩餘空間 */
+            min-width: 0; 
+            padding: 10px; 
+            border-radius: 6px; 
+            border: 1px solid var(--border-color); 
+            font-size: 1rem; 
+            background-color: var(--unanswered-bg); 
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        /* ================= 測驗主畫面 UI ================= */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 10px; border-bottom: 3px solid var(--primary-color);
+        }
+        h1 { font-size: 1.4rem; margin: 0; color: var(--primary-color); }
+        .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;}
+
+        .timer-box {
+            background-color: #333; color: #ffc107; padding: 6px 12px; border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1.1rem;
+            min-width: 70px; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn {
+            background-color: var(--primary-color); color: white; border: none;
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;
+        }
+
+        .main-container {
+            display: flex; flex-direction: row; flex: 1; gap: 15px; margin-top: 15px; overflow: hidden; width: 100%; 
+        }
+
+        .left-panel {
+            flex: 0 0 240px; background: var(--card-bg); border-radius: 8px; padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        .grid-title { font-size: 1rem; font-weight: bold; text-align: center; margin-bottom: 10px; color: var(--primary-color); }
+
+        .question-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); 
+            gap: 8px; overflow-y: auto; align-content: start; flex: 1; padding-right: 5px;
+        }
+
+        .grid-item {
+            background-color: var(--unanswered-bg); border: 1px solid var(--border-color); border-radius: 6px;
+            padding: 10px 0; text-align: center; cursor: pointer; position: relative; font-weight: bold; font-size: 0.95rem;
+        }
+
+        .grid-item.answered { background-color: var(--answered-bg); color: var(--answered-text); }
+        .grid-item.skipped { background-color: var(--skipped-bg); color: var(--skipped-text); }
+        .grid-item.panel-correct { background-color: var(--correct-bg) !important; color: var(--correct-text) !important; border-color: var(--correct-text); }
+        .grid-item.panel-wrong { background-color: var(--wrong-bg) !important; color: var(--wrong-text) !important; border-color: var(--wrong-text); }
+        .grid-item.panel-unanswered { background-color: var(--unanswered-bg) !important; color: #888 !important; border-color: var(--border-color); }
+
+        .bookmark-star { position: absolute; top: 1px; right: 4px; color: #ffc107; font-size: 0.75rem; display: none; }
+        .grid-item.bookmarked .bookmark-star { display: block; }
+
+        .right-panel {
+            flex: 1; background: var(--card-bg); border-radius: 8px; padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto;
+        }
+
+        .stats-container {
+            display: flex; justify-content: space-between; align-items: center; background-color: var(--unanswered-bg);
+            padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; border-left: 5px solid var(--primary-color);
+        }
+
+        .stats-bar { font-weight: bold; font-size: 1.05rem; color: var(--text-color); }
+        .btn-reset { background-color: #6c757d; font-size: 0.85rem; padding: 6px 12px; }
+        .btn-reset:hover { background-color: #dc3545; } 
+
+        .question-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; line-height: 1.6; }
+        
+        .options-container label {
+            display: block; background: var(--unanswered-bg); padding: 12px 15px; margin-bottom: 10px;
+            border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; font-size: 1.05rem;
+        }
+        .options-container label:hover { background-color: var(--border-color); }
+        .options-container input { margin-right: 12px; transform: scale(1.2); cursor: pointer;}
+        
+        .action-bar { display: flex; gap: 10px; margin-top: auto; padding-top: 15px; }
+
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 6px; font-weight: bold; font-size: 1.05rem; display: none; }
+        .correct-box { background-color: var(--correct-bg); color: var(--correct-text); border-left: 5px solid #28a745; }
+        .wrong-box { background-color: var(--wrong-bg); color: var(--wrong-text); border-left: 5px solid #dc3545; }
+
+        footer { text-align: center; font-size: 0.95rem; font-weight: bold; color: #777; padding: 12px 0 5px 0; margin-top: auto; }
+        footer .ver-highlight { color: var(--accent-color); margin-left: 8px; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .left-panel { flex: none; width: 100%; max-height: 160px; } 
+            .right-panel { flex: 1; }
+            .setup-row { flex-wrap: wrap; }
+            .row-label { text-align: left; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <div class="setup-header-text">
+            <h2 class="setup-title">全國技藝競賽 機器人學即測即評</h2>
+            <p class="setup-subtitle">HCVS 選手專屬備戰平台 • 邁向金手獎 <span class="setup-version">Ver 6.9.258</span></p>
+        </div>
+
+        <div class="setup-bar">
+            <div class="setup-row">
+                <div class="row-label">題庫範圍：</div>
+                <div class="row-text">第</div>
+                <input type="number" id="range-start" class="row-input" value="1" min="1">
+                <div class="row-text">題 ～ 第</div>
+                <input type="number" id="range-end" class="row-input" value="258" min="1" max="9999">
+                <div class="row-text">題</div>
+            </div>
+            
+            <div class="setup-row">
+                <div class="row-label">抽取題數：</div>
+                <select id="quiz-num" class="row-input">
+                    <option value="10">10 題</option>
+                    <option value="30" selected>30 題</option>
+                    <option value="50">50 題</option>
+                    <option value="100">100 題</option>
+                    <option value="all">範圍內全考</option>
+                </select>
+                <div class="row-text" style="font-weight:bold; margin: 0 5px;">或自訂：</div>
+                <input type="number" id="custom-num" class="row-input" placeholder="題數">
+            </div>
+
+            <button class="btn" style="font-size: 1.15rem; padding: 12px; width: 100%; margin-top: 10px; background-color: var(--primary-color);" onclick="startQuiz()">開始特訓</button>
+        </div>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 20px;">作答進度與計時將全自動即時儲存，重整網頁不遺失。</p>
+    </div>
+
+    <header>
+        <h1>機器人學即測即評</h1>
+        <div class="header-controls">
+            <div class="timer-box" id="timer-display">00:00</div>
+            <button class="btn" style="background-color:#6c757d;" onclick="toggleTheme()">切換主題</button>
+            <button class="btn" style="background-color:#e28743;" onclick="toggleBookmarkCurrent()">書籤</button>
+            <button class="btn" style="background-color:#dc3545;" onclick="reportError()">錯誤回報</button>
+            <button class="btn" style="background-color:#28a745;" onclick="submitQuiz()">交卷計分</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="grid-title">答題概況</div>
+            <div class="question-grid" id="number-grid"></div>
+        </div>
+
+        <div class="right-panel">
+            <div class="stats-container">
+                <div class="stats-bar" id="stats-counter">目前已答：0 題 / 總共：0 題</div>
+                <button class="btn btn-reset" onclick="resetQuiz()">重新測驗</button>
+            </div>
+
+            <div id="quiz-area" style="display: flex; flex-direction: column; flex: 1;">
+                <div class="question-text" id="q-text">系統載入中...</div>
+                <div class="options-container" id="q-options"></div>
+                
+                <div class="result-box" id="feedback-box"></div>
+
+                <div class="action-bar">
+                    <button class="btn" style="background-color:#555; flex: 1;" onclick="changeQuestion(currentIndex - 1)">上一題</button>
+                    <button class="btn" style="flex: 1;" onclick="changeQuestion(currentIndex + 1)">下一題</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        HCVS 專屬備戰平台 • 邁向金手獎 <span class="ver-highlight">Ver 6.9.258</span>
+    </footer>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(window.submitted){ alert('錯誤回報已自動送出至後台。感謝協助！'); window.submitted=false; }"></iframe>
+    <form action="https://docs.google.com/forms/d/e/1FAIpQLSdbhLE_5m2wHknapDS176N-V5RW3JJwZse8EMjo967Xtk0P0w/formResponse" method="post" target="hidden_iframe" id="gform" style="display:none;">
+        <input type="text" name="entry.1177158450" id="entry_id">
+        <input type="text" name="entry.1960243392" id="entry_reason">
+    </form>
+
+    <script>
+        const questionBank = [
+            { q: "1. 多軸關節式機器人(機器手臂)的特點是高自由度與靈活性...試問下列何者適合以並聯式機器人來開發？", options: ["(A) 汽車板金噴漆", "(B) 食品自動化整列", "(C) 手機外殼去毛邊及拋光", "(D) 汽車底盤焊接"], ans: 1 },
+            { q: "2. 下列何種感測器可以測距離？", options: ["(A) 超音波感測器", "(B) 紅外線感測器", "(C) 雷射光感測器", "(D) 以上皆是"], ans: 3 },
+            { q: "3. 下列何種通訊方式不屬於無線傳輸？", options: ["(A) Wi-Fi", "(B) Bluetooth 藍芽", "(C) ZigBee", "(D) RS232"], ans: 3 },
+            { q: "4. 下列何者不屬於感測器？", options: ["(A) 陀螺儀(Gyroscope)", "(B) 光敏電阻(CdS)", "(C) LED燈", "(D) 加速度計"], ans: 2 },
+            { q: "5. Boe-Bot(BB Car)自走車是一款機器人套件...下列何者是屬於自走車中致動器的部分？", options: ["(A) 微處理器", "(B) 馬達", "(C) 蜂鳴器", "(D) 紅外線頭燈"], ans: 1 }
+        ];
+
+        let currentQuizSet = [];
+        let currentIndex = 0;
+        let userAnswers = {};   
+        let skipStatus = {};    
+        let bookmarkStatus = {}; 
+        let isSubmitted = false;
+        window.submitted = false;
+
+        let totalSeconds = 0;
+        let timerInterval = null;
+
+        window.onload = function() {
+            if(localStorage.getItem('hcvs_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+            
+            let hasHistory = localStorage.getItem('hcvs_has_active_quiz');
+            
+            if (hasHistory === 'true') {
+                document.getElementById('setup-screen').style.display = 'none';
+                
+                currentQuizSet = JSON.parse(localStorage.getItem('hcvs_current_set') || "[]");
+                userAnswers = JSON.parse(localStorage.getItem('hcvs_answers') || "{}");
+                skipStatus = JSON.parse(localStorage.getItem('hcvs_skips') || "{}");
+                bookmarkStatus = JSON.parse(localStorage.getItem('hcvs_bookmarks') || "{}");
+                
+                let savedIndex = localStorage.getItem('hcvs_last_index');
+                if (savedIndex !== null) currentIndex = parseInt(savedIndex);
+
+                let savedSeconds = localStorage.getItem('hcvs_timer_seconds');
+                if (savedSeconds !== null) totalSeconds = parseInt(savedSeconds);
+
+                if (localStorage.getItem('hcvs_is_submitted') === 'true') {
+                    isSubmitted = true;
+                }
+
+                renderGrid();
+                showQuestion(currentIndex); 
+                updateStatsCounter();
+                updateTimerDisplay();
+                
+                if (!isSubmitted) startTimer();
+                else updateGridStatus();
+
+            } else {
+                document.getElementById('setup-screen').style.display = 'flex';
+            }
+        };
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                localStorage.setItem('hcvs_timer_seconds', totalSeconds); 
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            let secs = String(totalSeconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = mins + ":" + secs;
+        }
+
+        function startQuiz() {
+            let startIdx = parseInt(document.getElementById('range-start').value) || 1;
+            let endIdx = parseInt(document.getElementById('range-end').value) || questionBank.length;
+            
+            if (startIdx < 1) startIdx = 1;
+            if (endIdx > questionBank.length) endIdx = questionBank.length;
+            if (startIdx > endIdx) { let temp = startIdx; startIdx = endIdx; endIdx = temp; }
+
+            let rangedBank = questionBank.slice(startIdx - 1, endIdx);
+
+            let selectVal = document.getElementById('quiz-num').value;
+            let customVal = document.getElementById('custom-num').value;
+            
+            let num;
+            if (customVal) {
+                num = parseInt(customVal);
+            } else if (selectVal === 'all') {
+                num = rangedBank.length;
+            } else {
+                num = parseInt(selectVal);
+            }
+            
+            if (num > rangedBank.length) num = rangedBank.length;
+            if (num < 1 || isNaN(num)) {
+                alert("請輸入有效的題數");
+                return;
+            }
+
+            let shuffled = [...rangedBank].sort(() => 0.5 - Math.random());
+            currentQuizSet = shuffled.slice(0, num);
+            
+            userAnswers = {}; skipStatus = {}; bookmarkStatus = {}; isSubmitted = false; totalSeconds = 0;
+            
+            localStorage.setItem('hcvs_has_active_quiz', 'true');
+            localStorage.setItem('hcvs_current_set', JSON.stringify(currentQuizSet));
+            localStorage.setItem('hcvs_bookmarks', JSON.stringify(bookmarkStatus));
+            localStorage.removeItem('hcvs_is_submitted');
+
+            document.getElementById('setup-screen').style.display = 'none';
+            
+            currentIndex = 0;
+            renderGrid();
+            showQuestion(0);
+            updateStatsCounter();
+            updateTimerDisplay();
+            startTimer();
+        }
+
+        function resetQuiz() {
+            if (!confirm("確定要重置測驗嗎？這將會清空歷史進度與計時器，並返回首頁。")) return;
+
+            clearInterval(timerInterval);
+            isSubmitted = false;
+            userAnswers = {}; skipStatus = {}; totalSeconds = 0;
+
+            localStorage.removeItem('hcvs_has_active_quiz');
+            localStorage.removeItem('hcvs_current_set');
+            localStorage.removeItem('hcvs_answers');
+            localStorage.removeItem('hcvs_skips');
+            localStorage.removeItem('hcvs_bookmarks');
+            localStorage.removeItem('hcvs_last_index');
+            localStorage.removeItem('hcvs_timer_seconds');
+            localStorage.removeItem('hcvs_is_submitted');
+
+            document.getElementById('custom-num').value = '';
+            document.getElementById('setup-screen').style.display = 'flex';
+        }
+
+        function toggleTheme() {
+            let body = document.documentElement;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('hcvs_theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('hcvs_theme', 'dark');
+            }
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('number-grid');
+            grid.innerHTML = '';
+            currentQuizSet.forEach((q, index) => {
+                let item = document.createElement('div');
+                item.className = 'grid-item';
+                item.id = "grid-item-" + index;
+                item.innerHTML = (index + 1) + "<span class='bookmark-star'>★</span>";
+                item.onclick = () => changeQuestion(index); 
+                grid.appendChild(item);
+            });
+        }
+
+        function changeQuestion(targetIndex) {
+            if (targetIndex < 0 || targetIndex >= currentQuizSet.length) return;
+            
+            if (!isSubmitted) {
+                if (userAnswers[currentIndex] === undefined) {
+                    skipStatus[currentIndex] = true;
+                } else {
+                    delete skipStatus[currentIndex];
+                }
+                localStorage.setItem('hcvs_skips', JSON.stringify(skipStatus));
+            }
+            showQuestion(targetIndex);
+        }
+
+        function showQuestion(index) {
+            currentIndex = index;
+            localStorage.setItem('hcvs_last_index', currentIndex);
+
+            const qData = currentQuizSet[currentIndex];
+            let originalId = qData.q.match(/^\d+/)[0];
+            let pureQText = qData.q.replace(/^\d+\.\s*/, '');
+            document.getElementById('q-text').innerText = "【第 " + (index + 1) + " 題 / 原題庫第 " + originalId + " 題】\n" + pureQText;
+            
+            const optionsDiv = document.getElementById('q-options');
+            optionsDiv.innerHTML = '';
+
+            qData.options.forEach((opt, optIdx) => {
+                let label = document.createElement('label');
+                let radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q-opt';
+                radio.value = optIdx;
+                if (userAnswers[currentIndex] === optIdx) radio.checked = true;
+                if (isSubmitted) radio.disabled = true;
+
+                radio.onchange = function() {
+                    userAnswers[currentIndex] = parseInt(this.value);
+                    delete skipStatus[currentIndex]; 
+                    
+                    localStorage.setItem('hcvs_answers', JSON.stringify(userAnswers));
+                    localStorage.setItem('hcvs_skips', JSON.stringify(skipStatus));
+                    
+                    updateStatsCounter(); 
+                    updateGridStatus();
+                };
+
+                label.appendChild(radio);
+                label.append(opt);
+                optionsDiv.appendChild(label);
+            });
+
+            const feedback = document.getElementById('feedback-box');
+            if (isSubmitted) {
+                feedback.style.display = 'block';
+                if (userAnswers[currentIndex] === qData.ans) {
+                    feedback.className = "result-box correct-box";
+                    feedback.innerText = "答對了！";
+                } else {
+                    feedback.className = "result-box wrong-box";
+                    feedback.innerHTML = "答錯了！<br>正確答案是：<strong>" + qData.options[qData.ans] + "</strong>";
+                }
+            } else {
+                feedback.style.display = 'none';
+            }
+
+            updateGridStatus();
+        }
+
+        function reportError() {
+            const qData = currentQuizSet[currentIndex];
+            if (!qData) return;
+            
+            let originalId = qData.q.match(/^\d+/)[0];
+            let pureQText = qData.q.replace(/^\d+\.\s*/, '');
+            
+            let reason = prompt("即將回報【原題庫第 " + originalId + " 題】\n\n題目預覽：" + pureQText.substring(0, 20) + "...\n\n請輸入錯誤原因 (按下確定後系統將自動於背景送出)：");
+            
+            if (reason !== null && reason.trim() !== "") {
+                document.getElementById('entry_id').value = "第 " + originalId + " 題";
+                document.getElementById('entry_reason').value = reason;
+                window.submitted = true;
+                document.getElementById('gform').submit();
+            } else if (reason !== null) {
+                alert("回報失敗：請輸入具體原因");
+            }
+        }
+
+        function updateStatsCounter() {
+            let answeredCount = Object.keys(userAnswers).length;
+            let totalCount = currentQuizSet.length;
+            document.getElementById('stats-counter').innerText = "目前已答：" + answeredCount + " 題 / 總共：" + totalCount + " 題";
+        }
+
+        function updateGridStatus() {
+            currentQuizSet.forEach((q, index) => {
+                let item = document.getElementById("grid-item-" + index);
+                if (!item) return;
+                
+                item.classList.remove('answered', 'skipped', 'bookmarked', 'panel-correct', 'panel-wrong', 'panel-unanswered');
+
+                if (bookmarkStatus[index]) item.classList.add('bookmarked');
+
+                if (isSubmitted) {
+                    if (userAnswers[index] === undefined) {
+                        item.classList.add('panel-unanswered'); 
+                    } else if (userAnswers[index] === q.ans) {
+                        item.classList.add('panel-correct');    
+                    } else {
+                        item.classList.add('panel-wrong');      
+                    }
+                } else {
+                    if (userAnswers[index] !== undefined) {
+                        item.classList.add('answered'); 
+                    } else if (skipStatus[index]) {
+                        item.classList.add('skipped');  
+                    }
+                }
+                
+                item.style.borderColor = (index === currentIndex) ? 'var(--primary-color)' : 'var(--border-color)';
+                item.style.borderWidth = (index === currentIndex) ? '2px' : '1px';
+            });
+        }
+
+        function toggleBookmarkCurrent() {
+            bookmarkStatus[currentIndex] = !bookmarkStatus[currentIndex];
+            localStorage.setItem('hcvs_bookmarks', JSON.stringify(bookmarkStatus)); 
+            updateGridStatus();
+        }
+
+        function submitQuiz() {
+            if(isSubmitted) return;
+            
+            let unansweredCount = currentQuizSet.length - Object.keys(userAnswers).length;
+            if (unansweredCount > 0) {
+                if(!confirm("還有 " + unansweredCount + " 題尚未作答，確定要提早交卷嗎？")) return;
+            } else {
+                if(!confirm("確定要交卷結算分數嗎？")) return;
+            }
+
+            clearInterval(timerInterval); 
+            isSubmitted = true;
+            localStorage.setItem('hcvs_is_submitted', 'true'); 
+            
+            let score = 0;
+            currentQuizSet.forEach((q, index) => {
+                if (userAnswers[index] === q.ans) score++;
+            });
+
+            let finalPercent = Math.round((score / currentQuizSet.length) * 100);
+            let finalMins = Math.floor(totalSeconds / 60);
+            let finalSecs = totalSeconds % 60;
+            
+            alert("測驗結算完成\n\n得分：" + finalPercent + " 分\n答對題數：" + score + " / " + currentQuizSet.length + " 題\n總共耗時：" + finalMins + " 分 " + finalSecs + " 秒");
+            showQuestion(0); 
+        }
+    </script>
+</body>
+</html>
