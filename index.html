@@ -151,52 +151,44 @@
         footer { text-align: center; font-size: 0.85rem; color: var(--sub); padding: 10px 0; font-weight: bold; }
 
         /* ===== 手機版隔離 ===== */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            #setup-screen .title { font-size: 2.2rem; }
-            #setup-screen .card { padding: 24px 20px; gap: 16px; }
-            #setup-screen .row { flex-wrap: wrap; }
-            header { flex-direction: column; align-items: stretch; border-bottom: none; gap: 10px; }
-            header h1 { text-align: center; font-size: 1.4rem; }
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    #setup-screen .title { font-size: 2.2rem; }
+    #setup-screen .card { padding: 24px 20px; gap: 16px; }
+    #setup-screen .row { flex-wrap: wrap; }
+    header { flex-direction: column; align-items: stretch; border-bottom: none; gap: 10px; }
+    header h1 { text-align: center; font-size: 1.4rem; }
 
-            /* 第一排：Timer 50%、A⁻ 25%、A⁺ 25% */
-            /* 第二排：切換主題 25%、★書籤 25%、錯誤回報 25%、交卷計分 25% */
-            .header-controls {
-                display: grid;
-                grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-                grid-template-rows: auto auto;
-                gap: 8px;
-                width: 100%;
-            }
-            .timer-box {
-                grid-column: 1;
-                grid-row: 1;
-                width: 100%; padding: 10px; font-size: 1.1rem;}
-            /* A⁻ */
-            .header-controls .btn:nth-child(2) { grid-column: 2; grid-row: 1; }
-            /* A⁺ */
-            .header-controls .btn:nth-child(3) { grid-column: 3; grid-row: 1; }
-            /* 切換主題 — 第二排第1格，但第一排只用了3格，用span補齊讓第二排從col1開始 */
-            .header-controls .btn:nth-child(4) { grid-column: 1; grid-row: 2; }
-            /* ★ 書籤 */
-            .header-controls .btn:nth-child(5) { grid-column: 2; grid-row: 2; }
-            /* 錯誤回報 */
-            .header-controls .btn:nth-child(6) { grid-column: 3; grid-row: 2; }
-            /* 交卷計分 */
-            .header-controls .btn:nth-child(7) { grid-column: 4; grid-row: 2; }
+    /* 第一排：Timer 50%（span 2）、A⁻ 25%、A⁺ 25% */
+    /* 第二排：切換主題 25%、★書籤 25%、錯誤回報 25%、交卷計分 25% */
+    .header-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+    .timer-box {
+        grid-column: span 2;
+        width: 100%; padding: 10px; font-size: 1.1rem;
+    }
+    /* A⁻ */
+    .header-controls .btn:nth-child(2) { grid-column: auto; }
+    /* A⁺ */
+    .header-controls .btn:nth-child(3) { grid-column: auto; }
+    /* 切換主題、★書籤、錯誤回報、交卷計分 — 各佔一格自動排列 */
 
-            .header-controls .btn { padding: 10px 6px; font-size: 0.82rem; width: 100%; text-align: center; }
+    .header-controls .btn { padding: 10px 6px; font-size: 0.82rem; width: 100%; text-align: center; }
 
-            .main { flex-direction: column; gap: 10px; }
-            .left-panel { flex: none; width: 100%; height: 140px; padding: 12px; }
-            .right-panel { padding: 0; gap: 10px; }
-            .question-card { padding: 20px 18px; }
-            .stats-bar { padding: 12px 15px; flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
-            .btn-reset { font-size: 0.8rem !important; padding: 8px 12px !important; margin-top: 5px; }
-            .opt-letter { width: 40px; }
-            .opt-body { padding: 12px 15px; font-size: 1rem; }
-        }
-        /* ===== 手機版隔離結束 ===== */
+    .main { flex-direction: column; gap: 10px; }
+    .left-panel { flex: none; width: 100%; height: 140px; padding: 12px; }
+    .right-panel { padding: 0; gap: 10px; }
+    .question-card { padding: 20px 18px; }
+    .stats-bar { padding: 12px 15px; flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
+    .btn-reset { font-size: 0.8rem !important; padding: 8px 12px !important; margin-top: 5px; }
+    .opt-letter { width: 40px; }
+    .opt-body { padding: 12px 15px; font-size: 1rem; }
+}
+/* ===== 手機版隔離結束 ===== */
     </style>
 </head>
 <body>
