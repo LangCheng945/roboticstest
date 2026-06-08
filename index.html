@@ -1,265 +1,300 @@
 <!DOCTYPE html>
-<html lang="zh-TW" data-theme="dark">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全國技藝競賽 機器人學即測即評</title>
     <style>
         :root {
-            --bg: #f4f7f6; --card: #ffffff; --border: #cccccc; --text: #333333; --sub: #666666;
-            --primary: #004080; --answered: rgba(0,64,128,0.1); --answered-text: #004080;
-            --skipped: rgba(0,0,0,0.05); --skipped-text: #666666;
-            --correct-bg: rgba(40,167,69,0.15); --correct: #155724;
-            --wrong-bg: rgba(220,53,69,0.15); --wrong: #721c24; --hover: #e9ecef;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #003366;
+            --border-color: #cccccc;
+            --unanswered-bg: #f8f9fa;
+            --answered-bg: #d1ecf1;
+            --answered-text: #0c5460;
+            --skipped-bg: #fff3cd;
+            --skipped-text: #856404;
+            --correct-bg: #d4edda;
+            --correct-text: #155724;
+            --wrong-bg: #f8d7da;
+            --wrong-text: #721c24;
+            --accent-color: #f39c12;
         }
+
         [data-theme="dark"] {
-            --bg: #0a0a0a; --card: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.10);
-            --text: #e0e0e0; --sub: rgba(255,255,255,0.35); --primary: #e2e8f0;
-            --answered: rgba(200,200,200,0.18); --answered-text: #c8d6e5;
-            --skipped: rgba(200,200,200,0.08); --skipped-text: #888;
-            --correct-bg: rgba(40,167,69,0.18); --correct: #7ee8a2;
-            --wrong-bg: rgba(220,53,69,0.18); --wrong: #f5a0a8; --hover: rgba(255,255,255,0.07);
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --primary-color: #4da3ff;
+            --border-color: #444444;
+            --unanswered-bg: #3a3a3a;
+            --answered-bg: #114e60;
+            --answered-text: #e0f7fa;
+            --correct-bg: #1e4620;
+            --correct-text: #a3e2a6;
+            --wrong-bg: #5c1d24;
+            --wrong-text: #f2a3a8;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            padding: 15px; display: flex; flex-direction: column; height: 100vh;
-            background-color: var(--bg); color: var(--text); transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.2s, color 0.2s;
         }
-        [data-theme="dark"] body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 60%, #0a0a0a 100%);
-            background-attachment: fixed;
-        }
+
+        /* 首頁設定面板 */
         #setup-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 60%, #0a0a0a 100%);
-            z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+            background-color: var(--bg-color);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000;
         }
-        #setup-screen .hero { text-align: center; margin-bottom: 36px; }
-        #setup-screen .eyebrow { font-size: 0.85rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; margin-bottom: 12px; font-weight: 600; }
-        #setup-screen .title { font-size: 2.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; letter-spacing: -0.02em; }
-        #setup-screen .title .gray { color: #9ca3af; }
-        #setup-screen .title .white { color: #ffffff; }
-        #setup-screen .tagline { font-size: 0.95rem; color: rgba(255,255,255,0.35); margin-bottom: 14px; }
-        #setup-screen .version {
-            display: inline-block; border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4);
-            font-size: 0.75rem; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.05em; font-weight: bold;
+        
+        .setup-header-text { text-align: center; margin-bottom: 25px; }
+        .setup-title { color: var(--primary-color); font-size: 2.2rem; font-weight: bold; margin: 0 0 10px 0; }
+        .setup-subtitle { color: var(--accent-color); font-size: 1.2rem; font-weight: bold; margin: 0; }
+        .setup-version { color: #888; font-size: 0.9rem; font-weight: normal; margin-left: 8px; }
+        
+        /* 修改這裡：用掉整排空間的滿版設計 */
+        .setup-bar {
+            background: var(--card-bg); 
+            padding: 20px 30px; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-wrap: wrap; 
+            align-items: center; 
+            justify-content: space-between; /* 將元件平均推向兩側撐滿 */
+            gap: 15px;
+            width: 100%; 
+            max-width: 1000px; /* 放寬容器限制 */
+            border-top: 4px solid var(--primary-color);
+            box-sizing: border-box;
         }
-        #setup-screen .card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 28px 32px; width: 100%; max-width: 520px;
-            display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+        .setup-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            white-space: nowrap;
         }
-        #setup-screen .field-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); margin-bottom: 8px; }
-        #setup-screen .row { display: flex; align-items: center; gap: 10px; width: 100%; }
-        #setup-screen select, #setup-screen input[type=number] {
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            color: #e0e0e0; padding: 11px 14px; border-radius: 8px; font-size: 1rem; font-weight: 600;
-            outline: none; width: 100%; text-align: center;
+
+        .setup-divider {
+            width: 1px;
+            height: 30px;
+            background-color: var(--border-color);
         }
-        #setup-screen select:focus, #setup-screen input[type=number]:focus { border-color: rgba(255,255,255,0.4); }
-        #setup-screen select option { background: #1e1e1e; color: #e0e0e0; }
-        #setup-screen input::placeholder { color: rgba(255,255,255,0.25); font-weight: 400; }
-        #setup-screen .sep { color: rgba(255,255,255,0.35); white-space: nowrap; font-size: 0.95rem; font-weight: 600; }
-        #setup-screen .btn-start {
-            width: 100%; padding: 15px; border: none; border-radius: 10px;
-            background: rgba(255,255,255,0.15); color: #e0e0e0;
-            font-size: 1.15rem; font-weight: 700; cursor: pointer; letter-spacing: 0.05em;
-            transition: background 0.2s, transform 0.1s; margin-top: 5px;
+        
+        .select-input, .custom-input { 
+            padding: 8px 10px; border-radius: 4px; border: 1px solid var(--border-color); 
+            font-size: 1rem; background-color: var(--unanswered-bg); color: var(--text-color);
         }
-        #setup-screen .btn-start:hover { background: rgba(255,255,255,0.22); transform: translateY(-2px); }
-        #setup-screen .hint { text-align: center; font-size: 0.82rem; color: rgba(255,255,255,0.25); }
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
-        h1 { font-size: 1.3rem; font-weight: 800; color: var(--primary); letter-spacing: -0.01em; }
-        .header-controls { display: flex; align-items: center; gap: 8px; }
-        .timer-box {
-            background: #222; color: #ffc107; padding: 6px 14px; border-radius: 7px;
-            font-family: 'Courier New', monospace; font-weight: 700; font-size: 1.05rem;
-            border: 1px solid #111; text-align: center; min-width: 75px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
-        }
-        .btn {
-            padding: 7px 13px; border-radius: 7px; border: 1px solid var(--border);
-            font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #fff; transition: opacity 0.15s;
-        }
-        .btn:hover { opacity: 0.85; }
-        .main { display: flex; gap: 13px; flex: 1; overflow: hidden; margin-top: 13px; }
-        .left-panel {
-            flex: 0 0 280px; background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 16px; display: flex; flex-direction: column; overflow: hidden;
-        }
-        .grid-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sub); text-align: center; margin-bottom: 12px; }
-        .question-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; overflow-y: auto; align-content: start; flex: 1; padding-right: 4px; }
-        .grid-item {
-            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-            border-radius: 8px; padding: 9px 0; text-align: center; cursor: pointer;
-            font-weight: 700; font-size: 0.9rem; position: relative;
-            transition: transform 0.1s, background 0.15s; color: var(--text);
-        }
-        .grid-item:hover { transform: scale(1.07); background: var(--hover); }
-        .grid-item.active { border-color: var(--primary); border-width: 2px; }
-        .grid-item.answered { background: var(--answered); color: var(--answered-text); }
-        .grid-item.skipped { background: var(--skipped); color: var(--skipped-text); }
-        .grid-item.panel-correct { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); }
-        .grid-item.panel-wrong { background: var(--wrong-bg); color: var(--wrong); border-color: var(--wrong); }
-        .grid-item.panel-unanswered { background: var(--skipped); color: var(--sub); border-color: var(--border); }
-        .bookmark-star { position: absolute; top: 2px; right: 3px; color: #ffc107; font-size: 0.6rem; display: none; line-height: 1; pointer-events: none; }
-        .grid-item.bookmarked .bookmark-star { display: block; }
-        .right-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .stats-bar {
+        
+        .custom-input { width: 70px; text-align: center; }
+
+        /* 測驗主畫面 UI */
+        header {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--primary);
-            padding: 11px 16px; border-radius: 10px; font-weight: 700; font-size: 1rem; color: var(--text);
+            padding-bottom: 10px; border-bottom: 3px solid var(--primary-color);
         }
-        .btn-reset { background: #444 !important; font-size: 0.82rem; padding: 6px 11px; }
-        .btn-reset:hover { background: #8b1c1c !important; }
-        .question-card {
-            background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-            padding: 26px 28px; display: flex; flex-direction: column; gap: 18px; flex: 1;
-            box-shadow: 0 4px 32px rgba(0,0,0,0.5);
-            --q-font: 1.13rem; --opt-font: 1rem;
+        h1 { font-size: 1.4rem; margin: 0; color: var(--primary-color); }
+        .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;}
+
+        .timer-box {
+            background-color: #333; color: #ffc107; padding: 6px 12px; border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1.1rem;
+            min-width: 70px; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
-        .q-meta { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sub); }
-        .q-text { font-size: var(--q-font); font-weight: 700; line-height: 1.75; color: var(--text); transition: font-size 0.2s; }
-        .options { display: flex; flex-direction: column; gap: 8px; }
-        .opt-label {
-            display: flex; align-items: center; gap: 0;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 10px; cursor: pointer; overflow: hidden;
-            transition: background 0.15s, transform 0.1s; position: relative;
+
+        .btn {
+            background-color: var(--primary-color); color: white; border: none;
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;
         }
-        .opt-label:hover { background: var(--hover); transform: translateX(3px); }
-        .opt-letter {
-            width: 44px; flex-shrink: 0; text-align: center; font-size: 0.82rem; font-weight: 800;
-            color: var(--sub); padding: 14px 0; border-right: 1px solid var(--border); transition: color 0.15s;
+        
+        .btn-start {
+            font-size: 1.1rem;
+            padding: 10px 30px;
+            flex-shrink: 0;
         }
-        .opt-body { padding: 14px 16px; font-size: var(--opt-font); line-height: 1.5; flex: 1; color: var(--text); font-weight: 600; transition: font-size 0.2s; }
-        .opt-label input[type=radio] { display: none; }
-        .opt-label:has(input:checked) { background: var(--answered); border-color: var(--primary); }
-        .opt-label:has(input:checked)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary); }
-        .opt-label:has(input:checked) .opt-letter { color: var(--primary); border-right-color: var(--primary); }
-        .opt-label.correct { background: var(--correct-bg) !important; border-color: #28a745 !important; }
-        .opt-label.correct::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #28a745; }
-        .opt-label.correct .opt-letter { color: var(--correct); border-right-color: var(--correct); }
-        .opt-label.wrong { background: var(--wrong-bg) !important; border-color: #dc3545 !important; }
-        .opt-label.wrong::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #dc3545; }
-        .opt-label.wrong .opt-letter { color: var(--wrong); border-right-color: var(--wrong); }
-        .result-box { display: none; padding: 13px 16px; border-radius: 10px; font-weight: 700; font-size: 1rem; }
-        .correct-box { background: var(--correct-bg); color: var(--correct); border-left: 4px solid #28a745; }
-        .wrong-box { background: var(--wrong-bg); color: var(--wrong); border-left: 4px solid #dc3545; }
-        .action-bar { display: flex; gap: 10px; margin-top: auto; }
-        .action-bar .btn { flex: 1; padding: 12px 0; font-size: 0.95rem; border-radius: 10px; border: none; }
-        footer { text-align: center; font-size: 0.85rem; color: var(--sub); padding: 10px 0; font-weight: bold; }
+
+        .main-container {
+            display: flex; flex-direction: row; flex: 1; gap: 15px; margin-top: 15px; overflow: hidden; width: 100%; 
+        }
+
+        .left-panel {
+            flex: 0 0 240px; background: var(--card-bg); border-radius: 8px; padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        .grid-title { font-size: 1rem; font-weight: bold; text-align: center; margin-bottom: 10px; color: var(--primary-color); }
+
+        .question-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); 
+            gap: 8px; overflow-y: auto; align-content: start; flex: 1; padding-right: 5px;
+        }
+
+        .grid-item {
+            background-color: var(--unanswered-bg); border: 1px solid var(--border-color); border-radius: 6px;
+            padding: 10px 0; text-align: center; cursor: pointer; position: relative; font-weight: bold; font-size: 0.95rem;
+        }
+
+        .grid-item.answered { background-color: var(--answered-bg); color: var(--answered-text); }
+        .grid-item.skipped { background-color: var(--skipped-bg); color: var(--skipped-text); }
+        .grid-item.panel-correct { background-color: var(--correct-bg) !important; color: var(--correct-text) !important; border-color: var(--correct-text); }
+        .grid-item.panel-wrong { background-color: var(--wrong-bg) !important; color: var(--wrong-text) !important; border-color: var(--wrong-text); }
+        .grid-item.panel-unanswered { background-color: var(--unanswered-bg) !important; color: #888 !important; border-color: var(--border-color); }
+
+        .bookmark-star { position: absolute; top: 1px; right: 4px; color: #ffc107; font-size: 0.75rem; display: none; }
+        .grid-item.bookmarked .bookmark-star { display: block; }
+
+        .right-panel {
+            flex: 1; background: var(--card-bg); border-radius: 8px; padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto;
+        }
+
+        .stats-container {
+            display: flex; justify-content: space-between; align-items: center; background-color: var(--unanswered-bg);
+            padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; border-left: 5px solid var(--primary-color);
+        }
+
+        .stats-bar { font-weight: bold; font-size: 1.05rem; color: var(--text-color); }
+        .btn-reset { background-color: #6c757d; font-size: 0.85rem; padding: 6px 12px; }
+        .btn-reset:hover { background-color: #dc3545; } 
+
+        .question-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; line-height: 1.6; }
+        
+        .options-container label {
+            display: block; background: var(--unanswered-bg); padding: 12px 15px; margin-bottom: 10px;
+            border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; font-size: 1.05rem;
+        }
+        .options-container label:hover { background-color: var(--border-color); }
+        .options-container input { margin-right: 12px; transform: scale(1.2); cursor: pointer;}
+        
+        .action-bar { display: flex; gap: 10px; margin-top: auto; padding-top: 15px; }
+
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 6px; font-weight: bold; font-size: 1.05rem; display: none; }
+        .correct-box { background-color: var(--correct-bg); color: var(--correct-text); border-left: 5px solid #28a745; }
+        .wrong-box { background-color: var(--wrong-bg); color: var(--wrong-text); border-left: 5px solid #dc3545; }
+
+        footer { text-align: center; font-size: 0.95rem; font-weight: bold; color: #777; padding: 12px 0 5px 0; margin-top: auto; }
+        footer .ver-highlight { color: var(--accent-color); margin-left: 8px; }
+
+        @media (max-width: 900px) {
+            .setup-divider { display: none; }
+            .setup-bar { flex-direction: column; align-items: stretch; max-width: 500px; padding: 20px; }
+            .setup-group { justify-content: space-between; }
+        }
+
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            #setup-screen .title { font-size: 2.2rem; }
-            #setup-screen .card { padding: 24px 20px; gap: 16px; }
-            #setup-screen .row { flex-wrap: wrap; }
-            header { flex-direction: column; align-items: stretch; border-bottom: none; gap: 10px; }
-            header h1 { text-align: center; font-size: 1.4rem; }
-            .header-controls { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; width: 100%; }
-            .timer-box { grid-column: span 4; width: 100%; padding: 10px; font-size: 1.1rem; }
-            .header-controls .btn { padding: 10px 6px; font-size: 0.82rem; width: 100%; text-align: center; }
-            .header-controls .btn:nth-child(6),
-            .header-controls .btn:nth-child(7) { grid-column: span 2; }
-            .main { flex-direction: column; gap: 10px; }
-            .left-panel { flex: none; width: 100%; height: 140px; padding: 12px; }
-            .right-panel { padding: 0; gap: 10px; }
-            .question-card { padding: 20px 18px; }
-            .stats-bar { padding: 12px 15px; flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
-            .btn-reset { font-size: 0.8rem !important; padding: 8px 12px !important; margin-top: 5px; }
-            .opt-letter { width: 40px; }
-            .opt-body { padding: 12px 15px; font-size: 1rem; }
+            .main-container { flex-direction: column; }
+            .left-panel { flex: none; width: 100%; max-height: 160px; } 
+            .right-panel { flex: 1; }
         }
     </style>
 </head>
 <body>
 
-<div id="setup-screen">
-    <div class="hero">
-        <p class="eyebrow">全國技藝競賽 / 機器人學</p>
-        <h1 class="title"><span class="gray">即測即評</span><span class="white">備戰平台</span></h1>
-        <p class="tagline">HCVS 選手專屬 · 邁向金手獎</p>
-        <span class="version">Ver 6.9.258</span>
-    </div>
-    <div class="card">
-        <div>
-            <div class="field-label">抽取題數</div>
-            <div class="row">
-                <select id="quiz-num" style="flex:2;">
+    <div id="setup-screen">
+        <div class="setup-header-text">
+            <h2 class="setup-title">全國技藝競賽 機器人學即測即評</h2>
+            <p class="setup-subtitle">HCVS 選手專屬備戰平台 • 邁向金手獎 <span class="setup-version">Ver 6.7.258</span></p>
+        </div>
+
+        <div class="setup-bar">
+            <div class="setup-group">
+                範圍： 
+                <input type="number" id="range-start" class="custom-input" value="1" min="1">
+                ～
+                <input type="number" id="range-end" class="custom-input" value="258" min="1"> 題
+            </div>
+            
+            <div class="setup-divider"></div>
+            
+            <div class="setup-group">
+                題數：
+                <select id="quiz-num" class="select-input">
                     <option value="10">10 題</option>
                     <option value="30" selected>30 題</option>
                     <option value="50">50 題</option>
                     <option value="100">100 題</option>
-                    <option value="all">範圍內全考</option>
+                    <option value="all">全考</option>
                 </select>
-                <span class="sep">或</span>
-                <input type="number" id="custom-num" placeholder="自訂題數" style="flex:2;">
             </div>
-        </div>
-        <div>
-            <div class="field-label">題庫範圍（留空 = 全部）</div>
-            <div class="row">
-                <span class="sep">第</span>
-                <input type="number" id="range-start" placeholder="1" min="1" style="flex:1;">
-                <span class="sep">題 到第</span>
-                <input type="number" id="range-end" placeholder="258" min="1" style="flex:1;">
-                <span class="sep">題</span>
+
+            <div class="setup-divider"></div>
+
+            <div class="setup-group">
+                自訂：
+                <input type="number" id="custom-num" class="custom-input" placeholder="題數">
             </div>
+            
+            <button class="btn btn-start" onclick="startQuiz()">開始特訓</button>
         </div>
-        <button class="btn-start" onclick="startQuiz()">開始特訓</button>
-        <p class="hint">作答進度與計時全自動儲存，重整網頁不遺失</p>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 20px;">作答進度與計時將全自動即時儲存，重整網頁不遺失。</p>
     </div>
-</div>
 
-<header>
-    <h1>機器人學即測即評</h1>
-    <div class="header-controls">
-        <div class="timer-box" id="timer-display">00:00</div>
-        <button class="btn" style="background:#333;" onclick="changeFontSize(-1)">A⁻</button>
-        <button class="btn" style="background:#333;" onclick="changeFontSize(1)">A⁺</button>
-        <button class="btn" style="background:#333;" onclick="toggleTheme()">切換主題</button>
-        <button class="btn" style="background:#b07d10;" onclick="toggleBookmarkCurrent()">★ 書籤</button>
-        <button class="btn" style="background:#8b1c1c;" onclick="reportError()">錯誤回報</button>
-        <button class="btn" style="background:#155724;" onclick="submitQuiz()">交卷計分</button>
-    </div>
-</header>
-
-<div class="main">
-    <div class="left-panel">
-        <div class="grid-title">答題概況</div>
-        <div class="question-grid" id="number-grid"></div>
-    </div>
-    <div class="right-panel">
-        <div class="stats-bar">
-            <span id="stats-counter"></span>
-            <button class="btn btn-reset" onclick="resetQuiz()">重新測驗</button>
+    <header>
+        <h1>機器人學即測即評</h1>
+        <div class="header-controls">
+            <div class="timer-box" id="timer-display">00:00</div>
+            <button class="btn" style="background-color:#6c757d;" onclick="toggleTheme()">切換主題</button>
+            <button class="btn" style="background-color:#e28743;" onclick="toggleBookmarkCurrent()">★書籤</button>
+            <button class="btn" style="background-color:#dc3545;" onclick="reportError()">錯誤回報</button>
+            <button class="btn" style="background-color:#28a745;" onclick="submitQuiz()">交卷計分</button>
         </div>
-        <div class="question-card">
-            <div class="q-meta" id="q-number">系統載入中...</div>
-            <div class="q-text" id="q-text"></div>
-            <div class="options" id="q-options"></div>
-            <div class="result-box" id="feedback-box"></div>
-            <div class="action-bar">
-                <button class="btn" style="background:#333;" onclick="changeQuestion(currentIndex - 1)">← 上一題</button>
-                <button class="btn" style="background:#333;" onclick="changeQuestion(currentIndex + 1)">下一題 →</button>
+    </header>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="grid-title">答題概況</div>
+            <div class="question-grid" id="number-grid"></div>
+        </div>
+
+        <div class="right-panel">
+            <div class="stats-container">
+                <div class="stats-bar" id="stats-counter">目前已答：0 題 / 總共：0 題</div>
+                <button class="btn btn-reset" onclick="resetQuiz()">重新測驗</button>
+            </div>
+
+            <div id="quiz-area" style="display: flex; flex-direction: column; flex: 1;">
+                <div class="question-text" id="q-text">系統載入中...</div>
+                <div class="options-container" id="q-options"></div>
+                
+                <div class="result-box" id="feedback-box"></div>
+
+                <div class="action-bar">
+                    <button class="btn" style="background-color:#555; flex: 1;" onclick="changeQuestion(currentIndex - 1)">上一題</button>
+                    <button class="btn" style="flex: 1;" onclick="changeQuestion(currentIndex + 1)">下一題</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<footer>HCVS 專屬備戰平台 · 邁向金手獎 &nbsp; Ver 6.9.258</footer>
+    <footer>
+        HCVS 專屬備戰平台 • 邁向金手獎 <span class="ver-highlight">Ver 6.7.258</span>
+    </footer>
 
-<form action="https://docs.google.com/forms/d/e/1FAIpQLSdbhLE_5m2wHknapDS176N-V5RW3JJwZse8EMjo967Xtk0P0w/formResponse" method="post" target="hidden_iframe" id="gform" style="display:none;">
-    <input type="text" name="entry.1177158450" id="entry_id">
-    <input type="text" name="entry.1960243392" id="entry_reason">
-</form>
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(window.submitted){alert('錯誤回報已自動送出至後台。感謝協助！');window.submitted=false;}"></iframe>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(window.submitted){ alert('錯誤回報已自動送出至後台。感謝協助！'); window.submitted=false; }"></iframe>
+    <form action="https://docs.google.com/forms/d/e/1FAIpQLSdbhLE_5m2wHknapDS176N-V5RW3JJwZse8EMjo967Xtk0P0w/formResponse" method="post" target="hidden_iframe" id="gform" style="display:none;">
+        <input type="text" name="entry.1177158450" id="entry_id">
+        <input type="text" name="entry.1960243392" id="entry_reason">
+    </form>
 
-<script>
-    // ===== 題庫放這裡 =====
-    const questionBank = [
-    { q: "1. 多軸關節式機器人(機器手臂)的特點是高自由度與靈活性...試問下列何者適合以並聯式機器人來開發？", options: ["(A) 汽車板金噴漆", "(B) 食品自動化整列", "(C) 手機外殼去毛邊及拋光", "(D) 汽車底盤焊接"], ans: 1 },
+    <script>
+        // 題目
+        const questionBank = [
+            { q: "1. 多軸關節式機器人(機器手臂)的特點是高自由度與靈活性...試問下列何者適合以並聯式機器人來開發？", options: ["(A) 汽車板金噴漆", "(B) 食品自動化整列", "(C) 手機外殼去毛邊及拋光", "(D) 汽車底盤焊接"], ans: 1 },
     { q: "2. 下列何種感測器可以測距離？", options: ["(A) 超音波感測器", "(B) 紅外線感測器", "(C) 雷射光感測器", "(D) 以上皆是"], ans: 3 },
     { q: "3. 下列何種通訊方式不屬於無線傳輸？", options: ["(A) Wi-Fi", "(B) Bluetooth 藍芽", "(C) ZigBee", "(D) RS232"], ans: 3 },
     { q: "4. 下列何者不屬於感測器？", options: ["(A) 陀螺儀(Gyroscope)", "(B) 光敏電阻(CdS)", "(C) LED燈", "(D) 加速度計"], ans: 2 },
@@ -517,251 +552,316 @@
     { q: "256. 假設一關節由30度轉至60度,將其直線軌跡分成5個路徑點,轉速為10rpm,其每段所需的時間為多少秒?", options: ["(A) 3", "(B) 0.6", "(C) 1", "(D) 0.125"], ans: 3 },
     { q: "257. 下列分析方法何種可以判別非線性系統穩定性?", options: ["(A) 根軌跡(Root Locus)", "(B) 波德圖(Bode Plot)", "(C) 奈氏準則(Nyquist Criterion)", "(D) 李雅普諾夫穩定性準則(Lyapunov Stability Criterion)"], ans: 3 },
     { q: "258. 機械系統中的速度可以比擬成電路系統中的電流,力量可以比擬為電壓,請問機械系統中的阻尼相對於電路系統中的", options: ["(A) 電感", "(B) 電容", "(C) 電晶體", "(D) 電阻"], ans: 3 }
-    ];
+        ];
 
-    // ===== 狀態 =====
-    let quiz = [], userAnswers = [], bookmarks = [], submitted = false;
-    let currentIndex = 0, timerInterval = null, elapsedSeconds = 0;
-    let fontLevel = 0;
-    const fontSizes = [
-        { q: '1.13rem', opt: '1rem' },
-        { q: '1.4rem',  opt: '1.2rem' },
-        { q: '1.7rem',  opt: '1.45rem' }
-    ];
+        let currentQuizSet = [];
+        let currentIndex = 0;
+        let userAnswers = {};   
+        let skipStatus = {};    
+        let bookmarkStatus = {}; 
+        let isSubmitted = false;
+        window.submitted = false;
 
-    // ===== 字體大小 =====
-    function changeFontSize(dir) {
-        fontLevel = Math.max(0, Math.min(2, fontLevel + dir));
-        const card = document.querySelector('.question-card');
-        card.style.setProperty('--q-font', fontSizes[fontLevel].q);
-        card.style.setProperty('--opt-font', fontSizes[fontLevel].opt);
-    }
+        let totalSeconds = 0;
+        let timerInterval = null;
 
-    // ===== 主題 =====
-    function toggleTheme() {
-        const html = document.documentElement;
-        html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        localStorage.setItem('theme', html.getAttribute('data-theme'));
-    }
+        window.onload = function() {
+            if(localStorage.getItem('hcvs_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+            
+            let hasHistory = localStorage.getItem('hcvs_has_active_quiz');
+            
+            if (hasHistory === 'true') {
+                document.getElementById('setup-screen').style.display = 'none';
+                
+                currentQuizSet = JSON.parse(localStorage.getItem('hcvs_current_set') || "[]");
+                userAnswers = JSON.parse(localStorage.getItem('hcvs_answers') || "{}");
+                skipStatus = JSON.parse(localStorage.getItem('hcvs_skips') || "{}");
+                bookmarkStatus = JSON.parse(localStorage.getItem('hcvs_bookmarks') || "{}");
+                
+                let savedIndex = localStorage.getItem('hcvs_last_index');
+                if (savedIndex !== null) currentIndex = parseInt(savedIndex);
 
-    // ===== 計時器 =====
-    function startTimer() {
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            elapsedSeconds++;
-            localStorage.setItem('elapsed', elapsedSeconds);
-            const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
-            const s = String(elapsedSeconds % 60).padStart(2, '0');
-            document.getElementById('timer-display').textContent = `${m}:${s}`;
-        }, 1000);
-    }
+                let savedSeconds = localStorage.getItem('hcvs_timer_seconds');
+                if (savedSeconds !== null) totalSeconds = parseInt(savedSeconds);
 
-    // ===== 開始測驗 =====
-    function startQuiz() {
-        const customVal = parseInt(document.getElementById('custom-num').value);
-        const selectVal = document.getElementById('quiz-num').value;
-        const rs = parseInt(document.getElementById('range-start').value);
-        const re = parseInt(document.getElementById('range-end').value);
+                if (localStorage.getItem('hcvs_is_submitted') === 'true') {
+                    isSubmitted = true;
+                }
 
-        let pool = [...questionBank];
-        if (!isNaN(rs) && !isNaN(re)) pool = pool.filter((_, i) => (i + 1) >= rs && (i + 1) <= re);
-        else if (!isNaN(rs)) pool = pool.filter((_, i) => (i + 1) >= rs);
-        else if (!isNaN(re)) pool = pool.filter((_, i) => (i + 1) <= re);
+                renderGrid();
+                showQuestion(currentIndex); 
+                updateStatsCounter();
+                updateTimerDisplay();
+                
+                if (!isSubmitted) startTimer();
+                else updateGridStatus();
 
-        shuffle(pool);
-        let n = selectVal === 'all' ? pool.length : (!isNaN(customVal) && customVal > 0 ? customVal : parseInt(selectVal));
-        quiz = pool.slice(0, Math.min(n, pool.length));
-        userAnswers = Array(quiz.length).fill(null);
-        bookmarks = Array(quiz.length).fill(false);
-        submitted = false;
-        currentIndex = 0;
-        elapsedSeconds = 0;
-
-        saveState();
-        document.getElementById('setup-screen').style.display = 'none';
-        buildGrid();
-        changeQuestion(0);
-        startTimer();
-    }
-
-    function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-    }
-
-    // ===== 題目格網 =====
-    function buildGrid() {
-        const grid = document.getElementById('number-grid');
-        grid.innerHTML = '';
-        quiz.forEach((_, i) => {
-            const el = document.createElement('div');
-            el.className = 'grid-item';
-            el.id = `grid-${i}`;
-            el.textContent = i + 1;
-            el.innerHTML += '<span class="bookmark-star">★</span>';
-            el.onclick = () => changeQuestion(i);
-            grid.appendChild(el);
-        });
-        updateGrid();
-    }
-
-    function updateGrid() {
-        quiz.forEach((_, i) => {
-            const el = document.getElementById(`grid-${i}`);
-            if (!el) return;
-            el.className = 'grid-item';
-            if (submitted) {
-                if (userAnswers[i] === null) el.classList.add('panel-unanswered');
-                else if (userAnswers[i] === quiz[i].ans) el.classList.add('panel-correct');
-                else el.classList.add('panel-wrong');
             } else {
-                if (userAnswers[i] !== null) el.classList.add('answered');
+                document.getElementById('setup-screen').style.display = 'flex';
             }
-            if (i === currentIndex) el.classList.add('active');
-            if (bookmarks[i]) el.classList.add('bookmarked');
-        });
-    }
+        };
 
-    // ===== 渲染題目 =====
-    function changeQuestion(idx) {
-        if (idx < 0 || idx >= quiz.length) return;
-        currentIndex = idx;
-        const q = quiz[idx];
-        document.getElementById('q-number').textContent = `題目 ${idx + 1} / ${quiz.length}`;
-        document.getElementById('q-text').textContent = q.q;
-
-        const optContainer = document.getElementById('q-options');
-        optContainer.innerHTML = '';
-        const letters = ['A', 'B', 'C', 'D'];
-        q.options.forEach((opt, i) => {
-            const label = document.createElement('label');
-            label.className = 'opt-label';
-            label.innerHTML = `
-                <input type="radio" name="opt" value="${i}" ${userAnswers[idx] === i ? 'checked' : ''} ${submitted ? 'disabled' : ''}>
-                <span class="opt-letter">${letters[i]}</span>
-                <span class="opt-body">${opt}</span>`;
-            if (!submitted) {
-                label.querySelector('input').addEventListener('change', () => {
-                    userAnswers[idx] = i;
-                    saveState();
-                    updateGrid();
-                    updateStats();
-                    showFeedback(idx);
-                });
-            }
-            if (submitted) {
-                if (i === q.ans) label.classList.add('correct');
-                else if (i === userAnswers[idx] && userAnswers[idx] !== q.ans) label.classList.add('wrong');
-            }
-            optContainer.appendChild(label);
-        });
-
-        showFeedback(idx);
-        updateGrid();
-        updateStats();
-
-        const el = document.getElementById(`grid-${idx}`);
-        if (el) el.scrollIntoView({ block: 'nearest' });
-    }
-
-    function showFeedback(idx) {
-        const box = document.getElementById('feedback-box');
-        if (!submitted || userAnswers[idx] === null) { box.style.display = 'none'; return; }
-        const correct = userAnswers[idx] === quiz[idx].ans;
-        box.style.display = 'block';
-        box.className = `result-box ${correct ? 'correct-box' : 'wrong-box'}`;
-        box.textContent = correct ? '✓ 答對了！' : `✕ 答錯了，正確答案是 ${['A','B','C','D'][quiz[idx].ans]}`;
-    }
-
-    function updateStats() {
-        const answered = userAnswers.filter(a => a !== null).length;
-        document.getElementById('stats-counter').textContent =
-            submitted? `已作答 ${answered} / ${quiz.length} 題`
-            : `進度：${answered} / ${quiz.length} 題`;
-    }
-
-    // ===== 交卷 =====
-    function submitQuiz() {
-        if (!quiz.length) return;
-        const unanswered = userAnswers.filter(a => a === null).length;
-        if (unanswered > 0 && !confirm(`還有 ${unanswered} 題未作答，確定交卷？`)) return;
-        submitted = true;
-        clearInterval(timerInterval);
-        const correct = userAnswers.filter((a, i) => a === quiz[i].ans).length;
-        const total = quiz.length;
-        const pct = Math.round(correct / total * 100);
-        alert(`測驗結果\n答對：${correct} / ${total} 題（${pct}%）\n用時：${document.getElementById('timer-display').textContent}`);
-        buildGrid();
-        changeQuestion(currentIndex);
-        saveState();
-    }
-
-    // ===== 書籤 =====
-    function toggleBookmarkCurrent() {
-        if (!quiz.length) return;
-        bookmarks[currentIndex] = !bookmarks[currentIndex];
-        saveState();
-        updateGrid();
-    }
-
-    // ===== 重置 =====
-    function resetQuiz() {
-        if (!confirm('確定要重新測驗？目前進度將會清除。')) return;
-        clearInterval(timerInterval);
-        localStorage.removeItem('quizState');
-        document.getElementById('setup-screen').style.display = 'flex';
-        document.getElementById('q-number').textContent = '系統載入中...';
-        document.getElementById('q-text').textContent = '';
-        document.getElementById('q-options').innerHTML = '';
-        document.getElementById('number-grid').innerHTML = '';
-        document.getElementById('stats-counter').textContent = '';
-        document.getElementById('timer-display').textContent = '00:00';
-        quiz = []; userAnswers = []; bookmarks = []; submitted = false; elapsedSeconds = 0;}
-
-    // ===== 錯誤回報 =====
-    function reportError() {
-        if (!quiz.length) return;
-        const reason = prompt('請描述此題的錯誤（例如：答案有誤、題目不清）：');
-        if (!reason) return;
-        document.getElementById('entry_id').value = `題目${currentIndex + 1}：${quiz[currentIndex].q.substring(0, 30)}`;
-        document.getElementById('entry_reason').value = reason;
-        window.submitted = true;
-        document.getElementById('gform').submit();
-    }
-
-    // ===== localStorage =====
-    function saveState() {
-        localStorage.setItem('quizState', JSON.stringify({ quiz, userAnswers, bookmarks, submitted, currentIndex, elapsedSeconds }));
-    }
-
-    function loadState() {
-        const saved = localStorage.getItem('quizState');
-        if (!saved) return false;
-        try {
-            const s = JSON.parse(saved);
-            quiz = s.quiz; userAnswers = s.userAnswers; bookmarks = s.bookmarks;
-            submitted = s.submitted; currentIndex = s.currentIndex; elapsedSeconds = s.elapsedSeconds || 0;
-            return true;
-        } catch { return false; }
-    }
-
-    // ===== 初始化 =====
-    (function init() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
-
-        if (loadState() && quiz.length) {
-            document.getElementById('setup-screen').style.display = 'none';
-            const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
-            const s = String(elapsedSeconds % 60).padStart(2, '0');
-            document.getElementById('timer-display').textContent = `${m}:${s}`;
-            buildGrid();
-            changeQuestion(currentIndex);
-            if (!submitted) startTimer();
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                localStorage.setItem('hcvs_timer_seconds', totalSeconds); 
+                updateTimerDisplay();
+            }, 1000);
         }
-    })();
-</script>
+
+        function updateTimerDisplay() {
+            let mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            let secs = String(totalSeconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = mins + ":" + secs;
+        }
+
+        function startQuiz() {
+            let startIdx = parseInt(document.getElementById('range-start').value) || 1;
+            let endIdx = parseInt(document.getElementById('range-end').value) || questionBank.length;
+            
+            if (startIdx < 1) startIdx = 1;
+            if (endIdx > questionBank.length) endIdx = questionBank.length;
+            if (startIdx > endIdx) { let temp = startIdx; startIdx = endIdx; endIdx = temp; }
+
+            let rangedBank = questionBank.slice(startIdx - 1, endIdx);
+
+            let selectVal = document.getElementById('quiz-num').value;
+            let customVal = document.getElementById('custom-num').value;
+            
+            let num;
+            if (customVal) {
+                num = parseInt(customVal);
+            } else if (selectVal === 'all') {
+                num = rangedBank.length;
+            } else {
+                num = parseInt(selectVal);
+            }
+            
+            if (num > rangedBank.length) num = rangedBank.length;
+            if (num < 1 || isNaN(num)) {
+                alert("請輸入有效的題數");
+                return;
+            }
+
+            let shuffled = [...rangedBank].sort(() => 0.5 - Math.random());
+            currentQuizSet = shuffled.slice(0, num);
+            
+            userAnswers = {}; skipStatus = {}; bookmarkStatus = {}; isSubmitted = false; totalSeconds = 0;
+            
+            localStorage.setItem('hcvs_has_active_quiz', 'true');
+            localStorage.setItem('hcvs_current_set', JSON.stringify(currentQuizSet));
+            localStorage.setItem('hcvs_bookmarks', JSON.stringify(bookmarkStatus));
+            localStorage.removeItem('hcvs_is_submitted');
+
+            document.getElementById('setup-screen').style.display = 'none';
+            
+            currentIndex = 0;
+            renderGrid();
+            showQuestion(0);
+            updateStatsCounter();
+            updateTimerDisplay();
+            startTimer();
+        }
+
+        function resetQuiz() {
+            if (!confirm("確定要重置測驗嗎？這將會清空所有歷史進度與計時器，並返回首頁。")) return;
+
+            clearInterval(timerInterval);
+            isSubmitted = false;
+            userAnswers = {}; skipStatus = {}; totalSeconds = 0;
+
+            localStorage.removeItem('hcvs_has_active_quiz');
+            localStorage.removeItem('hcvs_current_set');
+            localStorage.removeItem('hcvs_answers');
+            localStorage.removeItem('hcvs_skips');
+            localStorage.removeItem('hcvs_bookmarks');
+            localStorage.removeItem('hcvs_last_index');
+            localStorage.removeItem('hcvs_timer_seconds');
+            localStorage.removeItem('hcvs_is_submitted');
+
+            document.getElementById('custom-num').value = '';
+            document.getElementById('setup-screen').style.display = 'flex';
+        }
+
+        function toggleTheme() {
+            let body = document.documentElement;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('hcvs_theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('hcvs_theme', 'dark');
+            }
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('number-grid');
+            grid.innerHTML = '';
+            currentQuizSet.forEach((q, index) => {
+                let item = document.createElement('div');
+                item.className = 'grid-item';
+                item.id = "grid-item-" + index;
+                item.innerHTML = (index + 1) + "<span class='bookmark-star'>★</span>";
+                item.onclick = () => changeQuestion(index); 
+                grid.appendChild(item);
+            });
+        }
+
+        function changeQuestion(targetIndex) {
+            if (targetIndex < 0 || targetIndex >= currentQuizSet.length) return;
+            
+            if (!isSubmitted) {
+                if (userAnswers[currentIndex] === undefined) {
+                    skipStatus[currentIndex] = true;
+                } else {
+                    delete skipStatus[currentIndex];
+                }
+                localStorage.setItem('hcvs_skips', JSON.stringify(skipStatus));
+            }
+            showQuestion(targetIndex);
+        }
+
+        function showQuestion(index) {
+            currentIndex = index;
+            localStorage.setItem('hcvs_last_index', currentIndex);
+
+            const qData = currentQuizSet[currentIndex];
+            let originalId = qData.q.match(/^\d+/)[0];
+            let pureQText = qData.q.replace(/^\d+\.\s*/, '');
+            document.getElementById('q-text').innerText = "【第 " + (index + 1) + " 題 / 原題庫第 " + originalId + " 題】\n" + pureQText;
+            
+            const optionsDiv = document.getElementById('q-options');
+            optionsDiv.innerHTML = '';
+
+            qData.options.forEach((opt, optIdx) => {
+                let label = document.createElement('label');
+                let radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q-opt';
+                radio.value = optIdx;
+                if (userAnswers[currentIndex] === optIdx) radio.checked = true;
+                if (isSubmitted) radio.disabled = true;
+
+                radio.onchange = function() {
+                    userAnswers[currentIndex] = parseInt(this.value);
+                    delete skipStatus[currentIndex]; 
+                    
+                    localStorage.setItem('hcvs_answers', JSON.stringify(userAnswers));
+                    localStorage.setItem('hcvs_skips', JSON.stringify(skipStatus));
+                    
+                    updateStatsCounter(); 
+                    updateGridStatus();
+                };
+
+                label.appendChild(radio);
+                label.append(opt);
+                optionsDiv.appendChild(label);
+            });
+
+            const feedback = document.getElementById('feedback-box');
+            if (isSubmitted) {
+                feedback.style.display = 'block';
+                if (userAnswers[currentIndex] === qData.ans) {
+                    feedback.className = "result-box correct-box";
+                    feedback.innerText = "答對了";
+                } else {
+                    feedback.className = "result-box wrong-box";
+                    feedback.innerHTML = "答錯了<br>正確答案是：<strong>" + qData.options[qData.ans] + "</strong>";
+                }
+            } else {
+                feedback.style.display = 'none';
+            }
+
+            updateGridStatus();
+        }
+
+        function reportError() {
+            const qData = currentQuizSet[currentIndex];
+            if (!qData) return;
+            
+            let originalId = qData.q.match(/^\d+/)[0];
+            let pureQText = qData.q.replace(/^\d+\.\s*/, '');
+            
+            let reason = prompt("即將回報【原題庫第 " + originalId + " 題】\n\n題目預覽：" + pureQText.substring(0, 20) + "...\n\n請輸入錯誤原因 (按下確定後系統將自動於背景送出)：");
+            
+            if (reason !== null && reason.trim() !== "") {
+                document.getElementById('entry_id').value = "第 " + originalId + " 題";
+                document.getElementById('entry_reason').value = reason;
+                window.submitted = true;
+                document.getElementById('gform').submit();
+            } else if (reason !== null) {
+                alert("回報失敗：請輸入具體原因");
+            }
+        }
+
+        function updateStatsCounter() {
+            let answeredCount = Object.keys(userAnswers).length;
+            let totalCount = currentQuizSet.length;
+            document.getElementById('stats-counter').innerText = "目前已答：" + answeredCount + " 題 / 總共：" + totalCount + " 題";
+        }
+
+        function updateGridStatus() {
+            currentQuizSet.forEach((q, index) => {
+                let item = document.getElementById("grid-item-" + index);
+                if (!item) return;
+                
+                item.classList.remove('answered', 'skipped', 'bookmarked', 'panel-correct', 'panel-wrong', 'panel-unanswered');
+
+                if (bookmarkStatus[index]) item.classList.add('bookmarked');
+
+                if (isSubmitted) {
+                    if (userAnswers[index] === undefined) {
+                        item.classList.add('panel-unanswered'); 
+                    } else if (userAnswers[index] === q.ans) {
+                        item.classList.add('panel-correct');    
+                    } else {
+                        item.classList.add('panel-wrong');      
+                    }
+                } else {
+                    if (userAnswers[index] !== undefined) {
+                        item.classList.add('answered'); 
+                    } else if (skipStatus[index]) {
+                        item.classList.add('skipped');  
+                    }
+                }
+                
+                item.style.borderColor = (index === currentIndex) ? 'var(--primary-color)' : 'var(--border-color)';
+                item.style.borderWidth = (index === currentIndex) ? '2px' : '1px';
+            });
+        }
+
+        function toggleBookmarkCurrent() {
+            bookmarkStatus[currentIndex] = !bookmarkStatus[currentIndex];
+            localStorage.setItem('hcvs_bookmarks', JSON.stringify(bookmarkStatus)); 
+            updateGridStatus();
+        }
+
+        function submitQuiz() {
+            if(isSubmitted) return;
+            
+            let unansweredCount = currentQuizSet.length - Object.keys(userAnswers).length;
+            if (unansweredCount > 0) {
+                if(!confirm("還有 " + unansweredCount + " 題尚未作答，確定要提早交卷嗎？")) return;
+            } else {
+                if(!confirm("確定要交卷結算分數嗎？")) return;
+            }
+
+            clearInterval(timerInterval); 
+            isSubmitted = true;
+            localStorage.setItem('hcvs_is_submitted', 'true'); 
+            
+            let score = 0;
+            currentQuizSet.forEach((q, index) => {
+                if (userAnswers[index] === q.ans) score++;
+            });
+
+            let finalPercent = Math.round((score / currentQuizSet.length) * 100);
+            let finalMins = Math.floor(totalSeconds / 60);
+            let finalSecs = totalSeconds % 60;
+            
+            alert("測驗結算完成\n\n得分：" + finalPercent + " 分\n答對題數：" + score + " / " + currentQuizSet.length + " 題\n總共耗時：" + finalMins + " 分 " + finalSecs + " 秒");
+            showQuestion(0); 
+        }
+    </script>
 </body>
 </html>
