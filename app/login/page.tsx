@@ -13,13 +13,28 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      router.push("/");
-    }, 1000);
-  };
+  // 在 LoginPage 元件中修改 handleSubmit
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  const email = (e.target as any)[0].value;
+  const password = (e.target as any)[1].value;
+
+  if (isLogin) {
+    // 執行登入
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) alert("登入失敗：" + error.message);
+    else router.push("/");
+  } else {
+    // 執行註冊
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) alert("註冊失敗：" + error.message);
+    else alert("註冊成功！請檢查信箱驗證。");
+  }
+  
+  setIsLoading(false);
+};
 
   return (
     <div className="flex min-h-screen w-full bg-black text-white selection:bg-white/20">
