@@ -23,55 +23,17 @@ interface AppShellProps {
 }
 
 const navigation = [
-  {
-    href: "/",
-    label: "今日",
-    icon: Home,
-    mobile: true
-  },
-  {
-    href: "/learn",
-    label: "學習",
-    icon: BookOpen,
-    mobile: true
-  },
-  {
-    href: "/practice",
-    label: "特訓",
-    icon: Dumbbell,
-    mobile: true
-  },
-  {
-    href: "/review",
-    label: "複習",
-    icon: RotateCcw,
-    mobile: true
-  },
-  {
-    href: "/leaderboard",
-    label: "排行",
-    icon: Trophy,
-    mobile: true
-  },
-  {
-    href: "/library",
-    label: "題庫",
-    icon: Library,
-    mobile: false
-  },
-  {
-    href: "/profile",
-    label: "個人",
-    icon: UserRound,
-    mobile: false
-  }
+  { href: "/", label: "今日", icon: Home, mobile: true },
+  { href: "/learn", label: "學習", icon: BookOpen, mobile: true },
+  { href: "/practice", label: "特訓", icon: Dumbbell, mobile: true },
+  { href: "/review", label: "複習", icon: RotateCcw, mobile: true },
+  { href: "/leaderboard", label: "排行", icon: Trophy, mobile: true },
+  { href: "/library", label: "題庫", icon: Library, mobile: false },
+  { href: "/profile", label: "個人", icon: UserRound, mobile: false }
 ] as const;
 
 function isCurrentRoute(pathname: string, href: string) {
-  if (href === "/") {
-    return pathname === "/";
-  }
-
+  if (href === "/") return pathname === "/";
   return pathname.startsWith(href);
 }
 
@@ -109,6 +71,11 @@ export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const mobileNavigation = navigation.filter((item) => item.mobile);
 
+  // 登入頁面不顯示側邊欄，改為全螢幕
+  if (pathname === "/login") {
+    return <main className="min-h-dvh w-full">{children}</main>;
+  }
+
   return (
     <div className="min-h-dvh">
       <aside
@@ -122,10 +89,7 @@ export function AppShell({ children }: AppShellProps) {
             <Brand />
           </div>
 
-          <nav
-            className="mt-8 space-y-1.5"
-            aria-label="主要導覽"
-          >
+          <nav className="mt-8 space-y-1.5" aria-label="主要導覽">
             {navigation.map((item) => {
               const active = isCurrentRoute(pathname, item.href);
               const Icon = item.icon;
@@ -146,22 +110,11 @@ export function AppShell({ children }: AppShellProps) {
                     <motion.span
                       layoutId="desktop-navigation"
                       className="absolute inset-0 rounded-xl border border-white/10 bg-white/[0.08]"
-                      transition={{
-                        type: "spring",
-                        stiffness: 420,
-                        damping: 34
-                      }}
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}
-
-                  <Icon
-                    className="relative z-10 size-[18px]"
-                    strokeWidth={active ? 2.25 : 1.8}
-                  />
-
-                  <span className="relative z-10">
-                    {item.label}
-                  </span>
+                  <Icon className="relative z-10 size-[18px]" strokeWidth={active ? 2.25 : 1.8} />
+                  <span className="relative z-10">{item.label}</span>
                 </Link>
               );
             })}
@@ -173,21 +126,14 @@ export function AppShell({ children }: AppShellProps) {
                 <div className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/[0.07]">
                   <Boxes className="size-5 text-white/70" />
                 </div>
-
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">
-                    選手模式
-                  </p>
-                  <p className="text-xs text-white/35">
-                    離線資料已啟用
-                  </p>
+                  <p className="truncate text-sm font-semibold">選手模式</p>
+                  <p className="text-xs text-white/35">離線資料已啟用</p>
                 </div>
               </div>
-
               <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.07]">
                 <div className="h-full w-[64%] rounded-full bg-white/70" />
               </div>
-
               <div className="mt-2 flex justify-between text-[10px] font-medium text-white/35">
                 <span>Level 8</span>
                 <span>320 / 500 XP</span>
@@ -205,7 +151,6 @@ export function AppShell({ children }: AppShellProps) {
           )}
         >
           <Brand />
-
           <Link
             href="/library"
             aria-label="開啟題庫"
@@ -249,22 +194,11 @@ export function AppShell({ children }: AppShellProps) {
                 <motion.span
                   layoutId="mobile-navigation"
                   className="absolute inset-1 rounded-2xl bg-white/[0.08]"
-                  transition={{
-                    type: "spring",
-                    stiffness: 430,
-                    damping: 34
-                  }}
+                  transition={{ type: "spring", stiffness: 430, damping: 34 }}
                 />
               )}
-
-              <Icon
-                className="relative z-10 size-[19px]"
-                strokeWidth={active ? 2.3 : 1.8}
-              />
-
-              <span className="relative z-10">
-                {item.label}
-              </span>
+              <Icon className="relative z-10 size-[19px]" strokeWidth={active ? 2.3 : 1.8} />
+              <span className="relative z-10">{item.label}</span>
             </Link>
           );
         })}
