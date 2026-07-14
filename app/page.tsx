@@ -36,30 +36,10 @@ const metrics: Array<{
   caption: string;
   icon: LucideIcon;
 }> = [
-  {
-    label: "Day Streak",
-    value: "12 天",
-    caption: "距離個人紀錄還有 3 天",
-    icon: Flame
-  },
-  {
-    label: "今日任務",
-    value: "2 / 3",
-    caption: "完成後獲得 100 XP",
-    icon: Trophy
-  },
-  {
-    label: "今日 XP",
-    value: "90 XP",
-    caption: "今日目標 150 XP",
-    icon: Target
-  },
-  {
-    label: "目前等級",
-    value: "Level 8",
-    caption: "距離 Level 9 還有 180 XP",
-    icon: Gauge
-  }
+  { label: "Day Streak", value: "12 天", caption: "距離個人紀錄還有 3 天", icon: Flame },
+  { label: "今日任務", value: "2 / 3", caption: "完成後獲得 100 XP", icon: Trophy },
+  { label: "今日 XP", value: "90 XP", caption: "今日目標 150 XP", icon: Target },
+  { label: "目前等級", value: "Level 8", caption: "距離 Level 9 還有 180 XP", icon: Gauge }
 ];
 
 const abilities = [
@@ -78,12 +58,7 @@ const tasks = [
   { label: "Vision", current: 2, total: 5, completed: false }
 ];
 
-function MetricCard({
-  label,
-  value,
-  caption,
-  icon: Icon
-}: (typeof metrics)[number]) {
+function MetricCard({ label, value, caption, icon: Icon }: (typeof metrics)[number]) {
   return (
     <Card className="group hover:-translate-y-0.5 hover:border-white/15 hover:shadow-lift">
       <CardContent className="p-4 sm:p-5">
@@ -96,8 +71,7 @@ function MetricCard({
             className={cn(
               "grid size-10 place-items-center rounded-xl",
               "border border-white/10 bg-white/[0.06]",
-              "text-white/65 transition-colors",
-              "group-hover:bg-white/[0.1] group-hover:text-white"
+              "text-white/65 transition-colors group-hover:bg-white/[0.1] group-hover:text-white"
             )}
           >
             <Icon className="size-[18px]" />
@@ -311,7 +285,8 @@ export default function HomePage() {
 
         <Card
           className={cn(
-            "relative overflow-hidden lg:col-span-7 border-white/15",
+            "relative overflow-hidden lg:col-span-7",
+            "border-white/15",
             "bg-[radial-gradient(circle_at_right_top,rgba(255,213,92,0.1),transparent_42%),rgba(255,255,255,0.045)]"
           )}
         >
