@@ -79,29 +79,28 @@ function Brand() {
   return (
     <Link
       href="/"
-      className="group flex items-center gap-3 rounded-2xl"
-      aria-label="AXIS Robotics 首頁"
+      className="group flex flex-col justify-center gap-1.5 py-1"
+      aria-label="即測即評備戰平台首頁"
     >
-      <span
-        className={cn(
-          "grid size-10 place-items-center rounded-xl",
-          "border border-white/14 bg-white text-black",
-          "shadow-[0_10px_30px_rgba(255,255,255,0.08)]",
-          "transition-transform duration-300",
-          "group-hover:rotate-3 group-hover:scale-[1.03]"
-        )}
-      >
-        <Crosshair className="size-5" strokeWidth={2.25} />
+      <span className="text-[10px] font-medium tracking-[0.08em] text-white/45 transition-colors group-hover:text-white/65">
+        全國中等學校工科技藝競賽
       </span>
-
-      <span>
-        <span className="block text-sm font-bold tracking-[0.2em]">
-          AXIS
+      <div className="flex items-center gap-2.5">
+        <span
+          className={cn(
+            "grid size-7 shrink-0 place-items-center rounded-lg",
+            "border border-white/14 bg-white text-black",
+            "shadow-[0_4px_12px_rgba(255,255,255,0.08)]",
+            "transition-transform duration-300",
+            "group-hover:rotate-3 group-hover:scale-[1.05]"
+          )}
+        >
+          <Crosshair className="size-3.5" strokeWidth={2.5} />
         </span>
-        <span className="block text-[10px] font-medium tracking-[0.12em] text-white/35">
-          HCVS ROBOTICS
+        <span className="text-[13px] font-bold tracking-wider text-white/90">
+          機器手臂即測即評平台
         </span>
-      </span>
+      </div>
     </Link>
   );
 }
